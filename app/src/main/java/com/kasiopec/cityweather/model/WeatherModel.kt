@@ -1,8 +1,17 @@
 package com.kasiopec.cityweather.model
 
+import android.app.Application
+import com.kasiopec.cityweather.App
+import com.kasiopec.cityweather.database.DatabaseEntities
+import com.kasiopec.cityweather.database.WeatherDB
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.await
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.*
@@ -29,46 +38,43 @@ class WeatherModel {
     }
 
     fun fetchWeatherData(city: String) {
-        call = request.getWeatherData(city, apiKey, defaultUnits)
-        call.enqueue(object : Callback<WeatherData> {
-            override fun onResponse(
-                call: Call<WeatherData>,
-                response: Response<WeatherData>
-            ) {
-                //catching non failing codes
-                if (!response.isSuccessful) {
-                    println("Code: " + response.code())
-                    return
-                }
-                val result = requireNotNull(response.body())
-                //DO STUFF WITH THE DATA
-                println("OPEN WEATHER Response: $result")
-                println("City name: " + result.name)
-                val date = Date(result.dt.toLong() * 1000).formatTo("HH:mm, MMM dd")
-                val status = result.weather[0].main
-                val statusDescription = result.weather[0].description
-                val city = CityItem(
-                    result.name,
-                    result.id,
-                    result.main.temp,
-                    date,
-                    status,
-                    statusDescription,
-                    result.main.feelsLike,
-                    result.main.humidity,
-                    result.wind.speed
-                )
-
-                cityList.add(city)
-                println("Updated as of $date")
-
-
+        GlobalScope.launch(Dispatchers.IO){
+            val response = request.getWeatherData(city, apiKey, defaultUnits)
+            if(!response.isSuccessful){
+                println("error appeared")
             }
+            val result = requireNotNull(response.body())
+            //DO STUFF WITH THE DATA
+            println("OPEN WEATHER Response: $result")
+            println("City name: " + result.name)
 
-            //method to catch failed calls
-            override fun onFailure(call: Call<WeatherData>, t: Throwable) {
-                println(t.message)
-            }
-        })
+            val date = Date(result.dt.toLong() * 1000).formatTo("HH:mm, MMM dd")
+            val status = result.weather[0].main
+            val statusDescription = result.weather[0].description
+
+            val cityItem = DatabaseEntities.CityWeather(
+                result.name,
+                result.id,
+                result.main.temp,
+                date,
+                status,
+                statusDescription,
+                result.main.feelsLike,
+                result.main.humidity,
+                result.wind.speed
+            )
+
+            WeatherDB.create(App.context).getCityWeatherDao().insertCity(cityItem)
+
+            val dbList = WeatherDB.create(App.context).getCityWeatherDao().getAllCities()
+            println(listOf(dbList))
+            println("Updated as of $date")
+
+        }
+    }
+
+
+    private suspend fun insertCityToRoom(cityWeather : DatabaseEntities.CityWeather, application: Application){
+        WeatherDB.create(application).getCityWeatherDao().insertCity(cityWeather)
     }
 }

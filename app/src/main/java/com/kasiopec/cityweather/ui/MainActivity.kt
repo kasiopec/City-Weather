@@ -2,14 +2,13 @@ package com.kasiopec.cityweather.ui
 
 import android.os.Bundle
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
+
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.kasiopec.cityweather.Contract
 import com.kasiopec.cityweather.R
 import com.kasiopec.cityweather.presenter.MainActivityPresenter
-import com.kasiopec.cityweather.presenter.MainFragmentPresenter
 
 class MainActivity : AppCompatActivity(),
     Contract.MainActivityView {
@@ -20,6 +19,7 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
+
 
         presenter = MainActivityPresenter(this)
 
