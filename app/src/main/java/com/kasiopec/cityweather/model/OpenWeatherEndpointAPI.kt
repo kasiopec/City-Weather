@@ -6,8 +6,8 @@ import retrofit2.http.Query
 
 interface OpenWeatherEndpointAPI {
     @GET("/data/2.5/weather")
-    fun getWeatherData(@Query ("q") city : String,
+    fun getWeatherData(@Query ("q") cityName : String,
                        @Query("APPID") key : String,
                        @Query("units") units : String
-    ) : Call<WeatherItem>
+    ) : Call<WeatherData>
 }

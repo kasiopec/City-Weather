@@ -1,11 +1,10 @@
 package com.kasiopec.cityweather
 
-import com.kasiopec.cityweather.model.WeatherItem
+import com.kasiopec.cityweather.model.CityItem
 
 interface Contract {
 
     interface MainActivityView {
-        fun addCity(city: String)
     }
 
     interface MainFragmentView {
@@ -15,12 +14,12 @@ interface Contract {
 
     }
 
-    interface MainViewPresenter{
-
+    interface MainActivityPresenter{
+        fun loadCityData(city : String)
     }
 
     interface MainFragmentPresenter{
-        fun getWeatherData() : List<WeatherItem>
+        fun getWeatherData() : List<CityItem>
     }
 
     interface DetailsFragmentPresenter{

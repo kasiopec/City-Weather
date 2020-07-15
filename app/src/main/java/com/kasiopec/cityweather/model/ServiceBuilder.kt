@@ -11,7 +11,7 @@ object ServiceBuilder {
 
     //retrofit object, contains base url
     private val retrofit = Retrofit.Builder()
-        .baseUrl("api.openweathermap.org")
+        .baseUrl("https://api.openweathermap.org")
         .addConverterFactory(GsonConverterFactory.create())
         .client(client)
         .build()

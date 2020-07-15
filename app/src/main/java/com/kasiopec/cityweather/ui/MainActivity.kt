@@ -8,18 +8,24 @@ import android.view.Menu
 import android.view.MenuItem
 import com.kasiopec.cityweather.Contract
 import com.kasiopec.cityweather.R
+import com.kasiopec.cityweather.presenter.MainActivityPresenter
+import com.kasiopec.cityweather.presenter.MainFragmentPresenter
 
 class MainActivity : AppCompatActivity(),
     Contract.MainActivityView {
+
+    lateinit var presenter : MainActivityPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
+        presenter = MainActivityPresenter(this)
+
+
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+            presenter.loadCityData("Daugavpils")
         }
     }
 
@@ -39,7 +45,5 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    override fun addCity(city: String) {
-        TODO("Not yet implemented")
-    }
+
 }
