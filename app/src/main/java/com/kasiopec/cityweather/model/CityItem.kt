@@ -1,5 +1,7 @@
 package com.kasiopec.cityweather.model
 
+import java.io.Serializable
+
 class CityItem(
     val cityName: String,
     val cityId: Int,

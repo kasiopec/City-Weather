@@ -3,6 +3,7 @@ package com.kasiopec.cityweather.database
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 class DatabaseEntities {
     @Entity(tableName = "weather")
@@ -26,5 +27,5 @@ class DatabaseEntities {
         var humidity: Int,
         @ColumnInfo(name = "wind_speed")
         var windSpeed: Double
-    )
+    ) : Serializable
 }

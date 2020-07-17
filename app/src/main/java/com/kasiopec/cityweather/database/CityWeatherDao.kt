@@ -1,18 +1,19 @@
 package com.kasiopec.cityweather.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
 interface CityWeatherDao {
     @Query("SELECT * FROM weather")
-    suspend fun getAllCities() : List<DatabaseEntities.CityWeather>
+    fun getAllCities() : LiveData<List<DatabaseEntities.CityWeather>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCity(cityWeather : DatabaseEntities.CityWeather)
+     fun insertCity(cityWeather : DatabaseEntities.CityWeather)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAllCities(cityList : List<DatabaseEntities.CityWeather>)
+     fun insertAllCities(cityList : List<DatabaseEntities.CityWeather>)
 
     @Delete
-    suspend fun deleteCity(cityWeather: DatabaseEntities.CityWeather)
+     fun deleteCity(cityWeather: DatabaseEntities.CityWeather)
 }

@@ -1,5 +1,6 @@
 package com.kasiopec.cityweather
 
+import com.kasiopec.cityweather.database.DatabaseEntities
 import com.kasiopec.cityweather.model.CityItem
 
 interface Contract {
@@ -19,7 +20,9 @@ interface Contract {
     }
 
     interface MainFragmentPresenter{
+        fun loadCityData(city : String)
         fun getWeatherData() : List<CityItem>
+        fun getData() : List<DatabaseEntities.CityWeather>
     }
 
     interface DetailsFragmentPresenter{
