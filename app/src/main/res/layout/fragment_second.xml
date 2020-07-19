@@ -31,7 +31,7 @@
         android:id="@+id/temperature"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="48dp"
         android:fontFamily="@font/roboto_light"
         android:text="@string/temperature"
         android:textSize="36sp"
@@ -57,45 +57,39 @@
         android:id="@+id/wind"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
+        android:layout_marginTop="16dp"
         android:fontFamily="@font/roboto"
         android:text="@string/wind_text"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/wind_value"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/humidity"
+        app:layout_constraintStart_toStartOf="@+id/humidity"
         app:layout_constraintTop_toBottomOf="@+id/update_time" />
 
     <TextView
         android:id="@+id/humidity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginRight="32dp"
         android:fontFamily="@font/roboto"
         android:text="@string/humidity_text"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/humidity_value"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/feels_like"
+        app:layout_constraintStart_toStartOf="@+id/feels_like"
         app:layout_constraintTop_toBottomOf="@+id/wind" />
 
     <TextView
         android:id="@+id/feels_like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
+        android:layout_marginBottom="4dp"
         android:fontFamily="@font/roboto"
         android:text="@string/feels_like_text"
         android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/feels_like_value"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -129,31 +123,21 @@
         android:id="@+id/wind_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="40dp"
         android:fontFamily="@font/roboto"
         android:text="@string/wind_text_value"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/wind"
-        app:layout_constraintTop_toBottomOf="@+id/update_time" />
+        app:layout_constraintStart_toStartOf="@+id/humidity_value"
+        app:layout_constraintTop_toTopOf="@+id/wind" />
 
     <TextView
         android:id="@+id/humidity_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="32dp"
         android:fontFamily="@font/roboto"
         android:text="@string/humidity_text_value"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/humidity"
-        app:layout_constraintTop_toBottomOf="@+id/wind_value" />
+        app:layout_constraintStart_toStartOf="@+id/feels_like_value"
+        app:layout_constraintTop_toTopOf="@+id/humidity" />
 
     <TextView
         android:id="@+id/feels_like_value"
@@ -161,23 +145,25 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginLeft="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginBottom="4dp"
         android:fontFamily="@font/roboto"
         android:text="@string/feels_like_text_value"
         android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/feels_like"
-        app:layout_constraintTop_toBottomOf="@+id/humidity_value" />
+        app:layout_constraintTop_toTopOf="@+id/feels_like"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/weatherIcon"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_marginTop="24dp"
+        android:contentDescription="@string/weather_icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/status_description"
-        tools:src="@tools:sample/avatars"
-        android:contentDescription="@string/weather_icon" />
+        tools:src="@tools:sample/avatars" />
 </androidx.constraintlayout.widget.ConstraintLayout>
