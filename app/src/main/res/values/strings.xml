@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">City Weather</string>
+    <string name="app_name">Weather Logger</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -18,4 +18,7 @@
     <string name="humidity_text_value">%1$s %%</string>
     <string name="feels_like_text">Feels like</string>
     <string name="feels_like_text_value">%1$s \u2103</string>
+    <string name="city_name">City name</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
 </resources>

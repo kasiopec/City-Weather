@@ -59,3 +59,4 @@ data class WeatherData(
         val speed: Double
     )
 }
+

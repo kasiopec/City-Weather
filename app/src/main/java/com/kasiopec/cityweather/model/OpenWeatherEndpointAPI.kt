@@ -7,8 +7,16 @@ import retrofit2.http.Query
 
 interface OpenWeatherEndpointAPI {
     @GET("/data/2.5/weather")
-    suspend fun getWeatherData(@Query ("q") cityName : String,
-                       @Query("APPID") key : String,
-                       @Query("units") units : String
-    ) : Response<WeatherData>
+    suspend fun getWeatherData(
+        @Query("q") cityName: String,
+        @Query("APPID") key: String,
+        @Query("units") units: String
+    ): Response<WeatherData>
+
+    @GET("/data/2.5/group")
+    suspend fun getBulkWeatherData(
+        @Query("id") cities: String,
+        @Query("APPID") key: String,
+        @Query("units") units: String
+    ): Response<WeatherBulkData>
 }

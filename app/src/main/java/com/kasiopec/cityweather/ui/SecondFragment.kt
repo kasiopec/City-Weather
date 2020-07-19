@@ -6,11 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toolbar
 import androidx.navigation.fragment.findNavController
 import com.kasiopec.cityweather.R
 import com.kasiopec.cityweather.database.DatabaseEntities
+import com.squareup.picasso.Picasso
+import java.util.*
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -37,9 +40,11 @@ class SecondFragment : Fragment() {
         val humidityValueText : TextView = view.findViewById(R.id.humidity_value)
         val feelLikeText : TextView = view.findViewById(R.id.feels_like)
         val feelsLikeValueText : TextView = view.findViewById(R.id.feels_like_value)
+        val weatherIcon : ImageView = view.findViewById(R.id.weatherIcon)
+
 
         cityText.text = item.cityName
-        tempText.text = item.temp.toString()
+        tempText.text = resources.getString(R.string.temperature, item.temp.toString())
         statusDescriptionText.text = item.statusDescription
         updateTimeText.text = resources.getString(R.string.update_text, item.date)
         windText.text = resources.getString(R.string.wind_text)
@@ -48,13 +53,19 @@ class SecondFragment : Fragment() {
         humidityValueText.text = resources.getString(R.string.humidity_text_value, item.humidity.toString())
         feelLikeText.text = resources.getString(R.string.feels_like_text)
         feelsLikeValueText.text = resources.getString(R.string.feels_like_text_value, item.feelsLike.toString())
+        Picasso.get()
+            .load(item.weatherIconUrl)
+            .into(weatherIcon)
 
         // Inflate the layout for this fragment
         return view
     }
 
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Objects.requireNonNull(activity as MainActivity).hideFab(true)
 //        view.findViewById<Button>(R.id.button_second).setOnClickListener {
 //            findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
 //        }

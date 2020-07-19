@@ -55,6 +55,7 @@ class WeatherModel {
             val cityItem = DatabaseEntities.CityWeather(
                 result.name,
                 result.id,
+                "https://openweathermap.org/img/wn/"+result.weather[0].icon+"@2x.png",
                 result.main.temp,
                 date,
                 status,

@@ -13,6 +13,8 @@ class DatabaseEntities {
         val cityName: String,
         @ColumnInfo(name = "city_id")
         val cityId: Int,
+        @ColumnInfo(name = "weather_icon_url")
+        val weatherIconUrl: String,
         @ColumnInfo(name = "current_temp")
         var temp: Double,
         @ColumnInfo(name = "date")

@@ -13,15 +13,22 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import com.kasiopec.cityweather.Contract
 import com.kasiopec.cityweather.R
+import com.kasiopec.cityweather.Resource
 import com.kasiopec.cityweather.database.DatabaseEntities
 import com.kasiopec.cityweather.model.MainFragmentViewModel
 import com.kasiopec.cityweather.presenter.MainFragmentPresenter
+import kotlinx.android.synthetic.main.fragment_first.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.*
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -32,7 +39,8 @@ class FirstFragment : Fragment(),
     lateinit var recyclerAdapter: WeatherListAdapter
 
     lateinit var viewModel: MainFragmentViewModel
-    lateinit var cityToDelete : DatabaseEntities.CityWeather
+    lateinit var cityToDelete: DatabaseEntities.CityWeather
+    lateinit var cityWeatherList: List<DatabaseEntities.CityWeather>
 
 
     override fun onCreateView(
@@ -53,19 +61,31 @@ class FirstFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Objects.requireNonNull(activity as MainActivity).hideFab(false)
         viewModel.cityWeatherList.observe(
             viewLifecycleOwner,
             Observer<List<DatabaseEntities.CityWeather>> {
+                cityWeatherList = it
                 recyclerAdapter.items = it
                 recyclerAdapter.notifyDataSetChanged()
+            }
+        )
+        swipeContainer.setOnRefreshListener {
+            viewModel.updateCitiesWeather(cityWeatherList)
+            viewModel.isNetworkError.observe(viewLifecycleOwner, Observer<Boolean>{isNetworkError ->
+                if(isNetworkError) notifyOnError()
             })
-
-
+            swipeContainer.isRefreshing = false
+        }
     }
 
+
+    //TODO DELETE THIS, REMOVE FROM INTERFACE
     override fun renderCityList() {
         recyclerAdapter.notifyDataSetChanged()
     }
+
+
 
     override fun onItemClicked(item: DatabaseEntities.CityWeather) {
         val secondFragment = SecondFragment()
@@ -93,16 +113,24 @@ class FirstFragment : Fragment(),
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-       if(requestCode == 1){
-           if(resultCode == 1){
-               viewModel.deleteWeatherFromRepository(cityToDelete)
-               Toast.makeText(activity,cityToDelete.cityName + " was deleted.",Toast.LENGTH_SHORT).show()
-           }
-       }
+        if (requestCode == 1) {
+            if (resultCode == 1) {
+                viewModel.deleteWeatherFromRepository(cityToDelete)
+                Toast.makeText(
+                    activity,
+                    cityToDelete.cityName + " was deleted.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 
-
-
+    private fun notifyOnError(){
+        if(!viewModel.isNetworkErrorShown.value!!){
+            Toast.makeText(requireContext(), viewModel.networkError.value, Toast.LENGTH_SHORT).show()
+            viewModel.networkErrorShown()
+        }
+    }
 
 
 }
