@@ -38,6 +38,7 @@ class WeatherListAdapter(
         holder.updateText.text = context.resources.getString(R.string.update_text, item.date)
         holder.temperatureText.text = context.resources.getString(R.string.temperature, item.temp.toString())
         holder.statusText.text = item.status
+        holder.requesText.text = item.requestTime
         Picasso.get()
             .load(item.weatherIconUrl)
             .into(holder.weatherIcon)
@@ -58,4 +59,5 @@ class WeatherViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val statusText : TextView = itemView.findViewById(R.id.status)
     val deleteImage : ImageView = itemView.findViewById(R.id.delete)
     val weatherIcon : ImageView = itemView.findViewById(R.id.weatherIcon)
+    val requesText : TextView = itemView.findViewById(R.id.updateDate2)
 }

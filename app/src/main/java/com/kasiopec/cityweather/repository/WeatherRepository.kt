@@ -6,9 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import com.kasiopec.cityweather.App
 import com.kasiopec.cityweather.database.DatabaseEntities
 import com.kasiopec.cityweather.database.WeatherDB
-import com.kasiopec.cityweather.model.OpenWeatherEndpointAPI
-import com.kasiopec.cityweather.model.ServiceBuilder
-import com.kasiopec.cityweather.model.WeatherData
+import com.kasiopec.cityweather.network.OpenWeatherEndpointAPI
+import com.kasiopec.cityweather.network.ServiceBuilder
+import com.kasiopec.cityweather.network.WeatherData
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -28,6 +28,7 @@ class WeatherRepository(val database: WeatherDB) {
     suspend fun fetchCityWeather(city: String) {
         withContext(Dispatchers.IO) {
             val response = request.getWeatherData(city, apiKey, defaultUnits)
+            val updateTime = Calendar.getInstance().time
             //Handling non-successful response, network related errors are caught in viewmodel
             if (!response.isSuccessful) {
                 withContext(Dispatchers.Main) {
@@ -37,7 +38,7 @@ class WeatherRepository(val database: WeatherDB) {
                 return@withContext
             }
             val results = requireNotNull(response.body())
-            setupCityWeatherObject(results)
+            setupCityWeatherObject(results, updateTime)
         }
     }
 
@@ -48,6 +49,7 @@ class WeatherRepository(val database: WeatherDB) {
         }
         val cityIds = cityIdsList.joinToString(",")
         withContext(Dispatchers.IO) {
+            val updateTime = Calendar.getInstance().time
             val response = request.getBulkWeatherData(cityIds, apiKey, defaultUnits)
             //Handling non-successful response, network related errors are caught in viewmodel
             if (!response.isSuccessful) {
@@ -58,7 +60,7 @@ class WeatherRepository(val database: WeatherDB) {
             }
             val results = requireNotNull(response.body())
             for (city in results.list) {
-                setupCityWeatherObject(city)
+                setupCityWeatherObject(city, updateTime)
             }
         }
     }
@@ -69,26 +71,28 @@ class WeatherRepository(val database: WeatherDB) {
         }
     }
 
-    private fun setupCityWeatherObject(city: WeatherData) {
+    private fun setupCityWeatherObject(city: WeatherData, date: Date) {
         val updatedCityList = mutableListOf<DatabaseEntities.CityWeather>()
-        val date = Date(city.dt.toLong() * 1000).formatTo("HH:mm, MMM dd")
+        val serverUpdateDate = Date(city.dt.toLong() * 1000).formatTo("HH:mm, MMM dd")
         val status = city.weather[0].main
         val statusDescription = city.weather[0].description
         val iconUrl = "https://openweathermap.org/img/wn/" + city.weather[0].icon + "@2x.png"
         val formattedTemperature = "%.1f".format(city.main.temp).toDouble()
         val formattedFeelsLike = "%.1f".format(city.main.feelsLike).toDouble()
+        val requestDate = date.formatTo("EEE dd, HH:mm")
 
         val cityItem = DatabaseEntities.CityWeather(
             city.name,
             city.id,
             iconUrl,
             formattedTemperature,
-            date,
+            serverUpdateDate,
             status,
             statusDescription,
             formattedFeelsLike,
             city.main.humidity,
-            city.wind.speed
+            city.wind.speed,
+            requestDate
         )
         updatedCityList.add(cityItem)
 

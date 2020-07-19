@@ -1,40 +1,24 @@
 package com.kasiopec.cityweather.ui
 
-import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.textfield.TextInputLayout
-import com.kasiopec.cityweather.Contract
 import com.kasiopec.cityweather.R
-import com.kasiopec.cityweather.Resource
 import com.kasiopec.cityweather.database.DatabaseEntities
 import com.kasiopec.cityweather.model.MainFragmentViewModel
-import com.kasiopec.cityweather.presenter.MainFragmentPresenter
 import kotlinx.android.synthetic.main.fragment_first.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class FirstFragment : Fragment(),
-    Contract.MainFragmentView, OnItemClickListener {
+class FirstFragment : Fragment(), OnItemClickListener {
     lateinit var recyclerView: RecyclerView
     lateinit var recyclerAdapter: WeatherListAdapter
 
@@ -78,13 +62,6 @@ class FirstFragment : Fragment(),
             swipeContainer.isRefreshing = false
         }
     }
-
-
-    //TODO DELETE THIS, REMOVE FROM INTERFACE
-    override fun renderCityList() {
-        recyclerAdapter.notifyDataSetChanged()
-    }
-
 
 
     override fun onItemClicked(item: DatabaseEntities.CityWeather) {

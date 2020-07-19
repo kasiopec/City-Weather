@@ -1,4 +1,4 @@
-package com.kasiopec.cityweather.model
+package com.kasiopec.cityweather.network
 
 import com.google.gson.annotations.SerializedName
 

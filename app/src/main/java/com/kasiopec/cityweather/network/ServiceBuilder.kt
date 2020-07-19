@@ -1,4 +1,4 @@
-package com.kasiopec.cityweather.model
+package com.kasiopec.cityweather.network
 
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

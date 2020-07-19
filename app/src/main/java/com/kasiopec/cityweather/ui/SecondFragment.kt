@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.kasiopec.cityweather.R
 import com.kasiopec.cityweather.database.DatabaseEntities
 import com.squareup.picasso.Picasso
+import org.w3c.dom.Text
 import java.util.*
 
 /**
@@ -41,12 +42,14 @@ class SecondFragment : Fragment() {
         val feelLikeText : TextView = view.findViewById(R.id.feels_like)
         val feelsLikeValueText : TextView = view.findViewById(R.id.feels_like_value)
         val weatherIcon : ImageView = view.findViewById(R.id.weatherIcon)
+        val requestTimeText : TextView = view.findViewById(R.id.request_time)
 
 
         cityText.text = item.cityName
         tempText.text = resources.getString(R.string.temperature, item.temp.toString())
         statusDescriptionText.text = item.statusDescription
         updateTimeText.text = resources.getString(R.string.update_text, item.date)
+        requestTimeText.text = item.requestTime
         windText.text = resources.getString(R.string.wind_text)
         windValueText.text = resources.getString(R.string.wind_text_value, item.windSpeed.toString())
         humidityText.text = resources.getString(R.string.humidity_text)

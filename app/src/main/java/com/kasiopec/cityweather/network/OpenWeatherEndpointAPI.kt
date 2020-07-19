@@ -1,6 +1,5 @@
-package com.kasiopec.cityweather.model
+package com.kasiopec.cityweather.network
 
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

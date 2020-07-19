@@ -28,6 +28,8 @@ class DatabaseEntities {
         @ColumnInfo(name = "humidity")
         var humidity: Int,
         @ColumnInfo(name = "wind_speed")
-        var windSpeed: Double
+        var windSpeed: Double,
+        @ColumnInfo(name= "request_time")
+        var requestTime: String
     ) : Serializable
 }
