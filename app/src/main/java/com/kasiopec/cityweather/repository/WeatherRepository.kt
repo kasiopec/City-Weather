@@ -9,6 +9,7 @@ import com.kasiopec.cityweather.database.WeatherDB
 import com.kasiopec.cityweather.network.OpenWeatherEndpointAPI
 import com.kasiopec.cityweather.network.ServiceBuilder
 import com.kasiopec.cityweather.network.WeatherData
+import kotlinx.android.synthetic.main.fragment_first.*
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -44,6 +45,7 @@ class WeatherRepository(val database: WeatherDB) {
         }
     }
 
+
     suspend fun fetchMultipleCitiesWeather(cities: List<DatabaseEntities.CityWeather>) {
         //extracting cityIds into a list, so then we can joinToString all the ints for query
         val cityIdsList = mutableListOf<Int>()
@@ -71,12 +73,13 @@ class WeatherRepository(val database: WeatherDB) {
             WeatherDB.create(App.context).getCityWeatherDao().deleteCity(city)
         }
     }
+
     /**
      * Function that set up [CityWeather] object and adds to the Room database
      * **/
-    private fun setupCityWeatherObject(cityList: List<WeatherData>, date: Date){
+    private fun setupCityWeatherObject(cityList: List<WeatherData>, date: Date) {
         val updatedCityList = mutableListOf<DatabaseEntities.CityWeather>()
-        for(city in cityList ){
+        for (city in cityList) {
             val serverUpdateDate = Date(city.dt.toLong() * 1000).formatTo("HH:mm, MMM dd")
             val status = city.weather[0].main
             val statusDescription = city.weather[0].description
@@ -104,8 +107,8 @@ class WeatherRepository(val database: WeatherDB) {
         if (updatedCityList.size == 1) {
             WeatherDB.create(App.context).getCityWeatherDao().upsertCity(updatedCityList[0])
         } else {
-            WeatherDB.create(App.context).getCityWeatherDao().upsertAllCities(updatedCityList)
-            //WeatherDB.create(App.context).getCityWeatherDao().updateAll(updatedCityList)
+            //WeatherDB.create(App.context).getCityWeatherDao().upsertAllCities(updatedCityList)
+            WeatherDB.create(App.context).getCityWeatherDao().updateAll(updatedCityList)
         }
     }
 

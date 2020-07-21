@@ -2,6 +2,7 @@ package com.kasiopec.cityweather.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
@@ -25,6 +26,7 @@ class FirstFragment : Fragment(), OnItemClickListener {
     lateinit var viewModel: MainFragmentViewModel
     lateinit var cityToDelete: DatabaseEntities.CityWeather
     lateinit var cityWeatherList: List<DatabaseEntities.CityWeather>
+    lateinit var  handler : Handler
 
 
     override fun onCreateView(
@@ -54,6 +56,7 @@ class FirstFragment : Fragment(), OnItemClickListener {
                 recyclerAdapter.notifyDataSetChanged()
             }
         )
+
         swipeContainer.setOnRefreshListener {
             viewModel.updateCitiesWeather(cityWeatherList)
             viewModel.isNetworkError.observe(viewLifecycleOwner, Observer<Boolean>{isNetworkError ->
@@ -61,6 +64,7 @@ class FirstFragment : Fragment(), OnItemClickListener {
             })
             swipeContainer.isRefreshing = false
         }
+
     }
 
 
