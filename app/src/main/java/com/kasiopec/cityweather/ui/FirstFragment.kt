@@ -104,7 +104,7 @@ class FirstFragment : Fragment(), OnItemClickListener {
 
     private fun notifyOnError(){
         if(!viewModel.isNetworkErrorShown.value!!){
-            Toast.makeText(requireContext(), viewModel.networkError.value, Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), viewModel.networkErrorMessage.value, Toast.LENGTH_SHORT).show()
             viewModel.networkErrorShown()
         }
     }

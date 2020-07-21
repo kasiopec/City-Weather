@@ -5,31 +5,32 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.io.Serializable
 
+
 class DatabaseEntities {
     @Entity(tableName = "weather")
     data class CityWeather constructor(
-        @PrimaryKey
         @ColumnInfo(name = "city_name")
-        val cityName: String,
+        var cityName: String = "",
+        @PrimaryKey
         @ColumnInfo(name = "city_id")
-        val cityId: Int,
+        var cityId: Int = -1,
         @ColumnInfo(name = "weather_icon_url")
-        val weatherIconUrl: String,
+        var weatherIconUrl: String = "",
         @ColumnInfo(name = "current_temp")
-        var temp: Double,
+        var temp: Double = -1.0,
         @ColumnInfo(name = "date")
-        var date: String,
+        var date: String = "",
         @ColumnInfo(name = "status")
-        var status: String,
+        var status: String = "",
         @ColumnInfo(name = "status_description")
-        var statusDescription: String,
+        var statusDescription: String = "",
         @ColumnInfo(name = "feels_like")
-        var feelsLike: Double,
+        var feelsLike: Double = -1.0,
         @ColumnInfo(name = "humidity")
-        var humidity: Int,
+        var humidity: Int = -1,
         @ColumnInfo(name = "wind_speed")
-        var windSpeed: Double,
-        @ColumnInfo(name= "request_time")
-        var requestTime: String
+        var windSpeed: Double = -1.0,
+        @ColumnInfo(name = "request_time")
+        var requestTime: String = ""
     ) : Serializable
 }

@@ -45,6 +45,7 @@ class MainActivityViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+
     fun networkErrorShown() {
         _isNetworkErrorShown.value = true
     }

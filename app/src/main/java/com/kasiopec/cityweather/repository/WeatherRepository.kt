@@ -25,6 +25,7 @@ class WeatherRepository(val database: WeatherDB) {
     var retrofitErrorMessage = MutableLiveData<String>()
     var isRetrofitError = MutableLiveData<Boolean>(false)
 
+
     suspend fun fetchCityWeather(city: String) {
         withContext(Dispatchers.IO) {
             val response = request.getWeatherData(city, apiKey, defaultUnits)
@@ -38,19 +39,21 @@ class WeatherRepository(val database: WeatherDB) {
                 return@withContext
             }
             val results = requireNotNull(response.body())
-            setupCityWeatherObject(results, updateTime)
+            val list = listOf(results)
+            setupCityWeatherObject(list, updateTime)
         }
     }
 
     suspend fun fetchMultipleCitiesWeather(cities: List<DatabaseEntities.CityWeather>) {
+        //extracting cityIds into a list, so then we can joinToString all the ints for query
         val cityIdsList = mutableListOf<Int>()
         for (city in cities) {
             cityIdsList.add(city.cityId)
         }
-        val cityIds = cityIdsList.joinToString(",")
+        val cityIdsString = cityIdsList.joinToString(",")
         withContext(Dispatchers.IO) {
             val updateTime = Calendar.getInstance().time
-            val response = request.getBulkWeatherData(cityIds, apiKey, defaultUnits)
+            val response = request.getBulkWeatherData(cityIdsString, apiKey, defaultUnits)
             //Handling non-successful response, network related errors are caught in viewmodel
             if (!response.isSuccessful) {
                 withContext(Dispatchers.Main) {
@@ -59,9 +62,7 @@ class WeatherRepository(val database: WeatherDB) {
                 }
             }
             val results = requireNotNull(response.body())
-            for (city in results.list) {
-                setupCityWeatherObject(city, updateTime)
-            }
+            setupCityWeatherObject(results.list, updateTime)
         }
     }
 
@@ -70,36 +71,41 @@ class WeatherRepository(val database: WeatherDB) {
             WeatherDB.create(App.context).getCityWeatherDao().deleteCity(city)
         }
     }
-
-    private fun setupCityWeatherObject(city: WeatherData, date: Date) {
+    /**
+     * Function that set up [CityWeather] object and adds to the Room database
+     * **/
+    private fun setupCityWeatherObject(cityList: List<WeatherData>, date: Date){
         val updatedCityList = mutableListOf<DatabaseEntities.CityWeather>()
-        val serverUpdateDate = Date(city.dt.toLong() * 1000).formatTo("HH:mm, MMM dd")
-        val status = city.weather[0].main
-        val statusDescription = city.weather[0].description
-        val iconUrl = "https://openweathermap.org/img/wn/" + city.weather[0].icon + "@2x.png"
-        val formattedTemperature = "%.1f".format(city.main.temp).toDouble()
-        val formattedFeelsLike = "%.1f".format(city.main.feelsLike).toDouble()
-        val requestDate = date.formatTo("EEE dd, HH:mm")
+        for(city in cityList ){
+            val serverUpdateDate = Date(city.dt.toLong() * 1000).formatTo("HH:mm, MMM dd")
+            val status = city.weather[0].main
+            val statusDescription = city.weather[0].description
+            val iconUrl = "https://openweathermap.org/img/wn/" + city.weather[0].icon + "@2x.png"
+            val formattedTemperature = "%.1f".format(city.main.temp).toDouble()
+            val formattedFeelsLike = "%.1f".format(city.main.feelsLike).toDouble()
+            val requestDate = date.formatTo("EEE dd, HH:mm")
 
-        val cityItem = DatabaseEntities.CityWeather(
-            city.name,
-            city.id,
-            iconUrl,
-            formattedTemperature,
-            serverUpdateDate,
-            status,
-            statusDescription,
-            formattedFeelsLike,
-            city.main.humidity,
-            city.wind.speed,
-            requestDate
-        )
-        updatedCityList.add(cityItem)
+            val cityItem = DatabaseEntities.CityWeather(
+                city.name,
+                city.id,
+                iconUrl,
+                formattedTemperature,
+                serverUpdateDate,
+                status,
+                statusDescription,
+                formattedFeelsLike,
+                city.main.humidity,
+                city.wind.speed,
+                requestDate
+            )
+            updatedCityList.add(cityItem)
+        }
 
         if (updatedCityList.size == 1) {
-            WeatherDB.create(App.context).getCityWeatherDao().insertCity(updatedCityList[0])
+            WeatherDB.create(App.context).getCityWeatherDao().upsertCity(updatedCityList[0])
         } else {
-            WeatherDB.create(App.context).getCityWeatherDao().insertAllCities(updatedCityList)
+            WeatherDB.create(App.context).getCityWeatherDao().upsertAllCities(updatedCityList)
+            //WeatherDB.create(App.context).getCityWeatherDao().updateAll(updatedCityList)
         }
     }
 

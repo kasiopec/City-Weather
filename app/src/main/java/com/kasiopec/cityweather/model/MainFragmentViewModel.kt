@@ -6,6 +6,7 @@ import com.kasiopec.cityweather.App
 import com.kasiopec.cityweather.database.DatabaseEntities
 import com.kasiopec.cityweather.database.WeatherDB
 import com.kasiopec.cityweather.repository.WeatherRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.net.UnknownHostException
@@ -15,12 +16,12 @@ class MainFragmentViewModel(app: Application) : AndroidViewModel(app) {
     private val weatherRepository  = WeatherRepository(WeatherDB.create(myApplication))
     val cityWeatherList = weatherRepository.cityWeatherList
 
-    private var networkErrorMessage = weatherRepository.retrofitErrorMessage
+    private var _networkErrorMessage = weatherRepository.retrofitErrorMessage
     private var _isNetworkErrorShown = MutableLiveData<Boolean>(false)
     private var _isNetworkError = weatherRepository.isRetrofitError
 
-    val networkError: LiveData<String>
-        get() = networkErrorMessage
+    val networkErrorMessage: LiveData<String>
+        get() = _networkErrorMessage
 
     val isNetworkErrorShown: LiveData<Boolean>
         get() = _isNetworkErrorShown
@@ -29,7 +30,7 @@ class MainFragmentViewModel(app: Application) : AndroidViewModel(app) {
         get() = _isNetworkError
 
     fun deleteWeatherFromRepository(city : DatabaseEntities.CityWeather){
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Main) {
                 weatherRepository.deleteCityWeather(city)
         }
     }
@@ -41,10 +42,10 @@ class MainFragmentViewModel(app: Application) : AndroidViewModel(app) {
                 _isNetworkErrorShown.value = false
                 weatherRepository.fetchMultipleCitiesWeather(cityList)
             }catch (networkError : UnknownHostException){
-                networkErrorMessage.value = "Network error, check your connection!"
+                _networkErrorMessage.value = "Network error, check your connection!"
                 _isNetworkError.value = true
             }catch (ex : Exception){
-                networkErrorMessage.value = "Unknown error: $ex"
+                _networkErrorMessage.value = "Unknown error: $ex"
                 _isNetworkError.value = true
             }
         }
