@@ -63,7 +63,7 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/humidity"
-        app:layout_constraintStart_toEndOf="@+id/request_time"
+        app:layout_constraintStart_toEndOf="@+id/temperature"
         app:layout_constraintTop_toTopOf="@+id/temperature" />
 
     <TextView
