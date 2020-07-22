@@ -89,7 +89,7 @@ class MainActivityTest{
         onView(withId(R.id.newCityEditText)).perform(ViewActions.replaceText("Rīga"), ViewActions.closeSoftKeyboard())
         onView(withId(R.id.btnYes)).check(matches(isDisplayed())).perform(click())
         onView(withId(R.id.customDialogLayout)).check(doesNotExist())
-        val viewGroup = onView(
+        val weatherCard = onView(
             Matchers.allOf(
                 childAtPosition(
                     Matchers.allOf(
@@ -104,7 +104,7 @@ class MainActivityTest{
                 isDisplayed()
             )
         )
-        viewGroup.check(matches(isDisplayed()))
+        weatherCard.check(matches(isDisplayed()))
 
         val textView = onView(
             Matchers.allOf(

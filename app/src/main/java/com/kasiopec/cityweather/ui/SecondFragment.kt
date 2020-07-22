@@ -5,19 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toolbar
-import androidx.navigation.fragment.findNavController
 import com.kasiopec.cityweather.R
 import com.kasiopec.cityweather.database.DatabaseEntities
 import com.squareup.picasso.Picasso
-import org.w3c.dom.Text
 import java.util.*
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
+ * Displays More Details screen data. Receives [CityWeather] item as an argument.
  */
 class SecondFragment : Fragment() {
 
@@ -60,17 +57,11 @@ class SecondFragment : Fragment() {
             .load(item.weatherIconUrl)
             .into(weatherIcon)
 
-        // Inflate the layout for this fragment
         return view
     }
-
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Objects.requireNonNull(activity as MainActivity).hideFab(true)
-//        view.findViewById<Button>(R.id.button_second).setOnClickListener {
-//            findNavController().navigate(R.id.action_SecondFragment_to_FirstFragment)
-//        }
     }
 }

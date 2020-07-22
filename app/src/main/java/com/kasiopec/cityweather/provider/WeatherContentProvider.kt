@@ -8,13 +8,16 @@ import com.kasiopec.cityweather.database.WeatherDB
 
 class WeatherContentProvider : ContentProvider() {
 
-    //UriMatcher instance to return a value of 1
-    // when the URI references the entire products table
+    /**
+     * UriMatcher instance to return a value of 1 when the URI references the entire products table
+     * **/
     private val CITIES = 1
-    //UriMatcher instance to return a value of 2
-    //when the URI references the ID of a specific row in the products table
-    private val CITY_ID = 2
 
+    /**
+     * UriMatcher instance to return a value of 2 when the URI references
+     * the ID of a specific row in the products table
+     * **/
+    private val CITY_ID = 2
 
     private val matcher = UriMatcher(UriMatcher.NO_MATCH)
 
@@ -34,6 +37,9 @@ class WeatherContentProvider : ContentProvider() {
         return true
     }
 
+    /**
+     * ContentProvider delete function, deletes items from the application local database
+     * **/
     override fun delete(uri: Uri, selection: String?,
                         selectionArgs: Array<String>?): Int {
         when(matcher.match(uri)){
@@ -56,6 +62,9 @@ class WeatherContentProvider : ContentProvider() {
         }
     }
 
+    /**
+     * ContentProvider insert function, inserts items from the application local database
+     * **/
     override fun insert(uri: Uri, values: ContentValues?): Uri? {
         when(matcher.match(uri)){
             CITIES -> {
@@ -69,6 +78,9 @@ class WeatherContentProvider : ContentProvider() {
         }
     }
 
+    /**
+     * ContentProvider get/query function, receives items from the application local database
+     * **/
     override fun query(uri: Uri, projection: Array<String>?, selection: String?,
                        selectionArgs: Array<String>?, sortOrder: String?): Cursor? {
         val code = matcher.match(uri)
@@ -88,6 +100,9 @@ class WeatherContentProvider : ContentProvider() {
 
     }
 
+    /**
+     * ContentProvider update function, updates items in the application local database
+     * **/
     override fun update(uri: Uri, values: ContentValues?, selection: String?,
                         selectionArgs: Array<String>?): Int {
          when(matcher.match(uri)){

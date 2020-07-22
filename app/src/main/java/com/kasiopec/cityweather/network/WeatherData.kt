@@ -2,6 +2,9 @@ package com.kasiopec.cityweather.network
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ * Retrofit response object for fetching single locations
+ * **/
 data class WeatherData(
     val base: String,
     val clouds: Clouds,

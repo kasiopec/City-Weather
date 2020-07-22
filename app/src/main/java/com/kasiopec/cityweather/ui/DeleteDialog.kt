@@ -6,7 +6,9 @@ import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 
-
+/**
+ * Material design style alert dialog. Called when user wants to delete and item
+ * **/
 class DeleteDialog : DialogFragment(){
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return MaterialAlertDialogBuilder(requireContext())
@@ -22,6 +24,4 @@ class DeleteDialog : DialogFragment(){
             }
             .create()
     }
-
-
 }

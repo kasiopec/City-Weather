@@ -1,19 +1,20 @@
 package com.kasiopec.cityweather.ui
 
 import android.content.Context
-import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.kasiopec.cityweather.R
 import com.kasiopec.cityweather.database.DatabaseEntities
-import com.kasiopec.cityweather.model.CityItem
 import com.squareup.picasso.Picasso
 
+
+/**
+ * Custom recycleView adapter.
+ * **/
 class WeatherListAdapter(
     var context: Context,
     private val listener: OnItemClickListener
@@ -38,7 +39,8 @@ class WeatherListAdapter(
         holder.updateText.text = context.resources.getString(R.string.update_text, item.date)
         holder.temperatureText.text = context.resources.getString(R.string.temperature, item.temp.toString())
         holder.statusText.text = item.status
-        holder.requesText.text = item.requestTime
+        holder.requestText.text = item.requestTime
+        // Loads weather icon from OpenWeather api
         Picasso.get()
             .load(item.weatherIconUrl)
             .into(holder.weatherIcon)
@@ -59,5 +61,5 @@ class WeatherViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val statusText : TextView = itemView.findViewById(R.id.status)
     val deleteImage : ImageView = itemView.findViewById(R.id.delete)
     val weatherIcon : ImageView = itemView.findViewById(R.id.weatherIcon)
-    val requesText : TextView = itemView.findViewById(R.id.updateDate2)
+    val requestText : TextView = itemView.findViewById(R.id.updateDate2)
 }

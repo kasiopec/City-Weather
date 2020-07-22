@@ -26,6 +26,9 @@ class MainFragmentViewModel(app: Application) : AndroidViewModel(app) {
     val isNetworkErrorShown: LiveData<Boolean>
         get() = _isNetworkErrorShown
 
+    /**
+     * Observable variable that holds if some error happened with the retrofit.
+     * **/
     val isNetworkError : LiveData<Boolean>
         get() = _isNetworkError
 
@@ -35,6 +38,10 @@ class MainFragmentViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /**
+     * Calls fetch method on repository within coroutine scope
+     * catches no network and other exceptions
+     * **/
     fun updateCitiesWeather(cityList : List<DatabaseEntities.CityWeather>){
         viewModelScope.launch {
             try {

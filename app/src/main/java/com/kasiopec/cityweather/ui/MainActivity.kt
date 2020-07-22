@@ -33,6 +33,9 @@ class MainActivity : AppCompatActivity(){
         }
     }
 
+    /**
+     * Function to show custom dialog box with the ability to enter new city name.
+     * **/
     private fun showDialog() {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -43,6 +46,7 @@ class MainActivity : AppCompatActivity(){
         val yesBtn = dialog.findViewById(R.id.btnYes) as Button
         val noBtn = dialog.findViewById(R.id.btnCloseDialog) as Button
         yesBtn.setOnClickListener {
+            //Check if edit text field is empty, on empty show error message
             if (body.text.toString().trim().isNotEmpty() ||
                 body.text.toString().trim().isNotBlank()) {
                 val cityName = body.text.toString()
@@ -58,10 +62,15 @@ class MainActivity : AppCompatActivity(){
         }
         noBtn.setOnClickListener { dialog.dismiss() }
         dialog.show()
+        //Resize dialog box with the current layout parameters.
+        // Otherwise dialog box is rendered with wrong dimensions
         val window = dialog.window
         window?.setLayout(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
     }
 
+    /**
+     * Function to display error toast message. Triggered when LiveData observable has changed
+     * **/
     private fun notifyOnError(){
         if(!viewModel.isNetworkErrorShown.value!!){
             Toast.makeText(this, viewModel.networkError.value, Toast.LENGTH_SHORT).show()
@@ -69,8 +78,10 @@ class MainActivity : AppCompatActivity(){
         }
     }
 
+    /**
+     * Function show or hide fab. Triggered from the Fragments
+     * **/
     fun hideFab(bool : Boolean){
         if (bool) fab.hide() else fab.show()
     }
-
 }

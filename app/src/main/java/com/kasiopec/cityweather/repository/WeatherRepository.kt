@@ -1,6 +1,5 @@
 package com.kasiopec.cityweather.repository
 
-
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kasiopec.cityweather.App
@@ -9,7 +8,6 @@ import com.kasiopec.cityweather.database.WeatherDB
 import com.kasiopec.cityweather.network.OpenWeatherEndpointAPI
 import com.kasiopec.cityweather.network.ServiceBuilder
 import com.kasiopec.cityweather.network.WeatherData
-import kotlinx.android.synthetic.main.fragment_first.*
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -18,7 +16,9 @@ class WeatherRepository(val database: WeatherDB) {
 
     private val request: OpenWeatherEndpointAPI = ServiceBuilder
         .buildService(OpenWeatherEndpointAPI::class.java)
+    //Api key required for the OpenWeather API, api key should not be in the code when goes into production
     private val apiKey = ***REMOVED***
+    //Default metric units for the weather data. Check API docs for more options
     private val defaultUnits = "metric"
 
     val cityWeatherList: LiveData<List<DatabaseEntities.CityWeather>> =
@@ -26,7 +26,12 @@ class WeatherRepository(val database: WeatherDB) {
     var retrofitErrorMessage = MutableLiveData<String>()
     var isRetrofitError = MutableLiveData<Boolean>(false)
 
-
+    /**
+     * Fetches single city by providing name of city.
+     * Function performs Retrofit call, receives response object and calls setup city method
+     * to convert the response into  database entity item.
+     * Paired with Coroutines to avoid locking main UI thread
+     * **/
     suspend fun fetchCityWeather(city: String) {
         withContext(Dispatchers.IO) {
             val response = request.getWeatherData(city, apiKey, defaultUnits)
@@ -45,18 +50,22 @@ class WeatherRepository(val database: WeatherDB) {
         }
     }
 
-
+    /**
+     * Fetches multiple cities by providing list of [CityWeather] objects.
+     * Function extracts city ids from the objects, joins all of them in a single string, and
+     * performs Retrofit call. Paired with Coroutines to avoid locking main UI thread
+     * **/
     suspend fun fetchMultipleCitiesWeather(cities: List<DatabaseEntities.CityWeather>) {
-        //extracting cityIds into a list, so then we can joinToString all the ints for query
+        //extracting cityIds into a list, so then joinToString creates string of ints for query
         val cityIdsList = mutableListOf<Int>()
         for (city in cities) {
             cityIdsList.add(city.cityId)
         }
         val cityIdsString = cityIdsList.joinToString(",")
+
         withContext(Dispatchers.IO) {
             val updateTime = Calendar.getInstance().time
             val response = request.getBulkWeatherData(cityIdsString, apiKey, defaultUnits)
-            //Handling non-successful response, network related errors are caught in viewmodel
             if (!response.isSuccessful) {
                 withContext(Dispatchers.Main) {
                     retrofitErrorMessage.value = response.message()
@@ -68,6 +77,10 @@ class WeatherRepository(val database: WeatherDB) {
         }
     }
 
+    /**
+     * Deletes weather object from the Room database, paired with Coroutines to avoid locking
+     * main UI thread
+     * **/
     suspend fun deleteCityWeather(city: DatabaseEntities.CityWeather) {
         withContext(Dispatchers.IO) {
             WeatherDB.create(App.context).getCityWeatherDao().deleteCity(city)
@@ -75,10 +88,11 @@ class WeatherRepository(val database: WeatherDB) {
     }
 
     /**
-     * Function that set up [CityWeather] object and adds to the Room database
+     * Function that sets up [CityWeather] object and adds it to the Room database
+     * Receives list of [WeatherData] objects, received from the API request call.
      * **/
     private fun setupCityWeatherObject(cityList: List<WeatherData>, date: Date) {
-        val updatedCityList = mutableListOf<DatabaseEntities.CityWeather>()
+        val updateList = mutableListOf<DatabaseEntities.CityWeather>()
         for (city in cityList) {
             val serverUpdateDate = Date(city.dt.toLong() * 1000).formatTo("HH:mm, MMM dd")
             val status = city.weather[0].main
@@ -101,17 +115,18 @@ class WeatherRepository(val database: WeatherDB) {
                 city.wind.speed,
                 requestDate
             )
-            updatedCityList.add(cityItem)
+            updateList.add(cityItem)
         }
 
-        if (updatedCityList.size == 1) {
-            WeatherDB.create(App.context).getCityWeatherDao().upsertCity(updatedCityList[0])
+        if (updateList.size == 1) {
+            WeatherDB.create(App.context).getCityWeatherDao().upsertCity(updateList[0])
         } else {
-            //WeatherDB.create(App.context).getCityWeatherDao().upsertAllCities(updatedCityList)
-            WeatherDB.create(App.context).getCityWeatherDao().updateAll(updatedCityList)
+            WeatherDB.create(App.context).getCityWeatherDao().updateAll(updateList)
         }
     }
-
+    /**
+     * Extension function to format a date variable
+     * **/
     private fun Date.formatTo(
         dateFormat: String,
         timeZone: TimeZone = TimeZone.getDefault()

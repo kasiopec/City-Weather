@@ -26,9 +26,16 @@ class MainActivityViewModel(app: Application) : AndroidViewModel(app) {
     val isNetworkErrorShown: LiveData<Boolean>
         get() = _isNetworkErrorShown
 
+    /**
+     * Observable variable that holds if some error happened with the retrofit.
+     * **/
     val isNetworkError : LiveData<Boolean>
         get() = _isNetworkError
 
+    /**
+     * Calls fetch method on repository within coroutine scope
+     * catches no network and other exceptions
+     * **/
     fun loadRepositoryWeatherData(city : String){
         viewModelScope.launch {
             try{
@@ -45,10 +52,7 @@ class MainActivityViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-
     fun networkErrorShown() {
         _isNetworkErrorShown.value = true
     }
-
-
 }

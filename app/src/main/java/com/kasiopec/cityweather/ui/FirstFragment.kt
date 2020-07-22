@@ -34,6 +34,7 @@ class FirstFragment : Fragment(), OnItemClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_first, container, false)
+
         viewModel = ViewModelProvider(this).get(MainFragmentViewModel::class.java)
         recyclerView = view.findViewById(R.id.weatherRecycler)
         recyclerView.layoutManager = LinearLayoutManager(activity)
@@ -41,12 +42,12 @@ class FirstFragment : Fragment(), OnItemClickListener {
         recyclerAdapter = WeatherListAdapter(requireActivity(), this)
         recyclerView.adapter = recyclerAdapter
 
-        // Inflate the layout for this fragment
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        //Shows fab button when view is created
         Objects.requireNonNull(activity as MainActivity).hideFab(false)
         viewModel.cityWeatherList.observe(
             viewLifecycleOwner,
@@ -56,7 +57,7 @@ class FirstFragment : Fragment(), OnItemClickListener {
                 recyclerAdapter.notifyDataSetChanged()
             }
         )
-
+        // Refresh functionality for the recycleView, pull from top to refresh
         swipeContainer.setOnRefreshListener {
             viewModel.updateCitiesWeather(cityWeatherList)
             viewModel.isNetworkError.observe(viewLifecycleOwner, Observer<Boolean>{isNetworkError ->
@@ -67,7 +68,12 @@ class FirstFragment : Fragment(), OnItemClickListener {
 
     }
 
-
+    /**
+     * Interface function that is executed when user presses on the "More detail" text.
+     * Passes [CityWeather] item as a bundle to display it on the Second fragment
+     * Transitions to the second fragment
+     * Uses custom transaction animations.
+     * **/
     override fun onItemClicked(item: DatabaseEntities.CityWeather) {
         val secondFragment = SecondFragment()
         val bundle = Bundle()
@@ -75,17 +81,18 @@ class FirstFragment : Fragment(), OnItemClickListener {
         secondFragment.arguments = bundle
         val manager = parentFragmentManager
         val fragTransaction = manager.beginTransaction()
-        //fragTransaction.replace(R.id.nav_host_fragment, secondFragment)
         fragTransaction.setCustomAnimations(
             R.anim.enter_from_right, R.anim.exit_to_right,
             R.anim.enter_from_right, R.anim.exit_to_right
         )
         fragTransaction.addToBackStack(null)
         fragTransaction.replace(R.id.nav_host_fragment, secondFragment).commit()
-        println(bundle)
-//findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
     }
 
+    /**
+     * Interface function that is executed when user presses on the delete icon.
+     * Calls delete dialog fragment
+     * **/
     override fun onDeleteClicked(item: DatabaseEntities.CityWeather) {
         val deleteDialog = DeleteDialog()
         deleteDialog.setTargetFragment(this, 1)
@@ -93,6 +100,10 @@ class FirstFragment : Fragment(), OnItemClickListener {
         deleteDialog.show(parentFragmentManager, "deleteDialog")
     }
 
+    /**
+     * Function to catch the [DeleteDialog] confirmation action
+     * On success, displays Toast message with the city that was deleted.
+     * **/
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == 1) {
             if (resultCode == 1) {
@@ -106,13 +117,14 @@ class FirstFragment : Fragment(), OnItemClickListener {
         }
     }
 
+    /**
+     * Function to display error toast message. Triggered when LiveData observable has changed
+     * **/
     private fun notifyOnError(){
         if(!viewModel.isNetworkErrorShown.value!!){
             Toast.makeText(requireContext(), viewModel.networkErrorMessage.value, Toast.LENGTH_SHORT).show()
             viewModel.networkErrorShown()
         }
     }
-
-
 }
 

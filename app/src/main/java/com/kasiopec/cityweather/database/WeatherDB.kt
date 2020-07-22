@@ -2,7 +2,6 @@ package com.kasiopec.cityweather.database
 
 
 import android.content.Context
-import androidx.annotation.VisibleForTesting
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -11,7 +10,6 @@ abstract class WeatherDB : RoomDatabase(){
     // Logic taken from
     // https://github.com/android/sunflower google open docs
     companion object{
-
         //Guarding from creating more than one database instance
         @Volatile
         private var instance : WeatherDB? = null
