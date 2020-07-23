@@ -12,3 +12,4 @@
 /captures
 .externalNativeBuild
 .cxx
+/app/src/main/java/com/kasiopec/cityweather/openweather_api_key.kt

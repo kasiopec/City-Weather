@@ -17,7 +17,7 @@ class WeatherRepository(val database: WeatherDB) {
     private val request: OpenWeatherEndpointAPI = ServiceBuilder
         .buildService(OpenWeatherEndpointAPI::class.java)
     //Api key required for the OpenWeather API, api key should not be in the code when goes into production
-    private val apiKey = ***REMOVED***
+    private val apiKey = TODO("Enter OpenWeather API key here")
     //Default metric units for the weather data. Check API docs for more options
     private val defaultUnits = "metric"
 
